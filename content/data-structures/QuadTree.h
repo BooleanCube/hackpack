@@ -1,7 +1,7 @@
 /**
  * Author: Samarth Upadhya
  * Date: 2024-02-12
- * Description: Implicit count inversions quad tree with lazy prop. Bounds are [inclusive, inclusive] with the bottom lowest borner and top right corner of the query box.
+ * Description: Implicit count inversions quad tree with lazy prop. Bounds are [inclusive, inclusive] with the bottom lowest corner and top right corner of the query box.
  * Time: O(n+m)
  * Status: Not tested
  */
