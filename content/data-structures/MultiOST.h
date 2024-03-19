@@ -11,7 +11,7 @@
 using namespace std;
 using namespace __gnu_pbds;
 
-struct MultiOST {
+struct multiost {
     typedef pair<int, unsigned> pii; // pair.first holds the value of the element
     typedef tree<
         pii,
@@ -24,8 +24,8 @@ struct MultiOST {
     ost s;
     unsigned cnt = 0;
 
-    MultiOST() = default;
-    MultiOST(initializer_list<int> l) { for(int x : l) insert(x); }
+    multiost() = default;
+    multiost(initializer_list<int> l) { for(int x : l) insert(x); }
     void insert(int x) { s.insert({x, cnt++}); }
     ost::iterator find_by_order(int k) { return s.find_by_order(k); }
     int order_of_key(int k) { return s.order_of_key({k, 0}); }
