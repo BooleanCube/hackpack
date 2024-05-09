@@ -2,7 +2,7 @@
  * Author: Samarth Upadhya
  * Date: 2024-05-08
  * Description: Fast array-based bottom-up segment tree for cheesers. 0-indexed and intervals are [inclusive, inclusive].
- * Time: O(log(n)) updates; O(log^2(n)) queries
+ * Time: Ө(log(n)) updates; Ө(log(n)) queries
  * Status: Tested
  */
 
