@@ -6,7 +6,11 @@ using namespace std;
 #define sz(x) (int)(x).size()
 using ll = long long;
 using pii = pair<int, int>;
+using pll = pair<ll, ll>;
 using vi = vector<int>;
+using vl = vector<ll>;
+#define f first
+#define s second
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);

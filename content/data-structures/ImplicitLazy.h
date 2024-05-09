@@ -1,7 +1,7 @@
 /**
  * Author: Samarth Upadhya
  * Date: 2024-02-16
- * Description: Implicit range sum segment tree with lazy prop. Bounds are [inclusive, inclusive] for the ranges.
+ * Description: Implicit range sum segment tree with lazy prop. Intervals are [inclusive, inclusive].
  * Time: O(log(n)) updates; O(log(n)) queries
  * Status: Not tested
  */
