@@ -9,17 +9,18 @@
 template <class T>
 struct segtree {
     using vt = vector<T>;
-    const int n; const static T def = 0;
+    const int n; constexpr static T def = 0;
     vt tree, lazy;
     vector<pii> rng;
     segtree(int N) : n(N) {
-        tree = vt(n<<1, (T)def), lazy = vt(n<<1, (T)def), rng = vector<pii>(n<<1);
+        tree = vt(n<<1), lazy = vt(n<<1), rng = vector<pii>(n<<1);
         rng[0] = _construct(1);
     }
     pii _construct(int idx) {
         if(idx >= n) return rng[idx] = {idx-n, idx-n};
         int ch = idx << 1; // left child
-        pii lh = _construct(ch), rh = _construct(ch+1);
+        pii lh = _construct(ch);
+        pii rh = _construct(ch+1);
         return rng[idx] = {lh.f, rh.s};
     }
     T value(int idx, T val) { return val * (rng[idx].s - rng[idx].f + 1); }
