@@ -6,13 +6,14 @@
  * Status: Tested
  */
 
+template <class T>
 struct segtree {
-    int n;
-    vl tree, lazy;
+    using vt = vector<T>;
+    const int n; const static T def = 0;
+    vt tree, lazy;
     vector<pii> rng;
     segtree(int N) : n(N) {
-        tree = vl(n<<1), lazy = vl(n<<1);
-        rng = vector<pii>(n<<1);
+        tree = vt(n<<1), lazy = vt(n<<1), rng = vector<pii>(n<<1);
         rng[0] = _construct(1);
     }
     pii _construct(int idx) {
@@ -22,25 +23,27 @@ struct segtree {
         pii rh = _construct(ch+1);
         return rng[idx] = {lh.f, rh.s};
     }
-    ll value(int idx, ll val) { return val * (rng[idx].s - rng[idx].f + 1); }
-    void incUpdate(int l, int r, ll val) { _incUpdate(l+n, r+n, val); }
-    void _incUpdate(int l, int r, ll val) {
+    T value(int idx, T val) { return val * (rng[idx].s - rng[idx].f + 1); }
+    void update(int l, int r, T val) { _incUpdate(l+n, r+n, val); }
+    void _incUpdate(int l, int r, T val) {
         for(;l<r; l>>=1,r>>=1) {
-            if(l & 1) { _updateLazy(l, val); lazy[l++] += val; }
+            if(l & 1) { _updateLazy(l, val); lazy[l++] = op(lazy[l], val); }
             if(l == r) break;
-            if(!(r & 1)) { _updateLazy(r, val); lazy[r--] += val; }
+            if(!(r & 1)) { _updateLazy(r, val); lazy[r--] = op(lazy[r], val); }
         }
-        _updateLazy(l, val); lazy[l] += val;
+        _updateLazy(l, val); lazy[l] = op(lazy[l], val);
     }
-    void _updateLazy(int idx, ll val) { for(val=value(idx, val); idx; idx>>=1) tree[idx] += val; }
-    ll query(int l, int r) { return _queryTree(l+n, r+n); }
-    ll _queryTree(int l, int r, ll t = 0) {
+    void _updateLazy(int idx, T val) { for(val=value(idx, val); idx; idx>>=1) tree[idx] = op(tree[idx], val); }
+    T query(int l, int r) { return _queryTree(l+n, r+n); }
+    T _queryTree(int l, int r, T t = def) {
         for(;l<r; l>>=1,r>>=1) {
-            if(l & 1) { t += value(l, _climbLazy(l)) + tree[l]; l++; }
+            if(l & 1) { t = mop({t, value(l, _climbLazy(l)), tree[l]}); l++; }
             if(l == r) break;
-            if(!(r & 1)) { t += value(r, _climbLazy(r)) + tree[r]; r--; }
+            if(!(r & 1)) { t = mop({t, value(r, _climbLazy(r)), tree[r]}); r--; }
         }
-        return value(l, _climbLazy(l)) + tree[l] + t;
+        return mop({value(l, _climbLazy(l)), tree[l], t});
     }
-    ll _climbLazy(int idx, ll cnt = 0) { for(idx>>=1; idx; idx>>=1) cnt += lazy[idx]; return cnt; }
+    T _climbLazy(int idx, T cnt = def) { for(idx>>=1; idx; idx>>=1) cnt = op(cnt, lazy[idx]); return cnt; }
+    T op(T a, T b) { return a + b; }
+    T mop(vt v, T t = def) { for(T x : v) t = op(t, x); return t; }
 };
