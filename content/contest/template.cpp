@@ -11,6 +11,7 @@ using vi = vector<int>;
 using vl = vector<ll>;
 #define f first
 #define s second
+#define sp <<" "<<
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
