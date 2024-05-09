@@ -8,10 +8,10 @@
 
 struct segtree {
     int n;
-    vl tree, lazy, lupd;
+    vl tree, lazy;
     vector<pii> rng;
     segtree(int N) : n(N) {
-        tree = vl(n<<1), lazy = vl(n<<1), lupd = vl(n<<1);
+        tree = vl(n<<1), lazy = vl(n<<1);
         rng = vector<pii>(n<<1);
         rng[0] = _construct(1);
     }
@@ -22,45 +22,25 @@ struct segtree {
         pii rh = _construct(ch+1);
         return rng[idx] = {lh.f, rh.s};
     }
-    ll _value(int idx, ll val) {
-        return val * (rng[idx].s - rng[idx].f + 1);
-    }
+    ll value(int idx, ll val) { return val * (rng[idx].s - rng[idx].f + 1); }
     void incUpdate(int l, int r, ll val) { _incUpdate(l+n, r+n, val); }
     void _incUpdate(int l, int r, ll val) {
-        if(l == r) {
-            _updateLupd(l, _value(l, val));
-            return void(lazy[l] += val);
+        for(;l<r; l>>=1,r>>=1) {
+            if(l & 1) { _updateLazy(l, val); lazy[l++] += val; }
+            if(l == r) break;
+            if(!(r & 1)) { _updateLazy(r, val); lazy[r--] += val; }
         }
-        if(l & 1) {
-            lazy[l] += val;
-            _updateLupd(l, _value(l, val));
-            return void(_incUpdate(l+1, r, val));
-        }
-        if(!(r & 1)) {
-            lazy[r] += val;
-            _updateLupd(r, _value(r, val));
-            return void(_incUpdate(l, r-1, val));
-        }
-        return _incUpdate(l>>1, r>>1, val);
+        _updateLazy(l, val); lazy[l] += val;
     }
-    void _updateLupd(int idx, ll val) {
-        while(idx) {
-            lupd[idx] += val;
-            idx >>= 1;
+    void _updateLazy(int idx, ll val) { for(val=value(idx, val); idx; idx>>=1) tree[idx] += val; }
+    ll query(int l, int r) { return _queryTree(l+n, r+n); }
+    ll _queryTree(int l, int r, ll t = 0) {
+        for(;l<r; l>>=1,r>>=1) {
+            if(l & 1) { t += value(l, _climbLazy(l)) + tree[l]; l++; }
+            if(l == r) break;
+            if(!(r & 1)) { t += value(r, _climbLazy(r)) + tree[r]; r--; }
         }
+        return value(l, _climbLazy(l)) + tree[l] + t;
     }
-    ll query(int l, int r) { return _queryTree(l+n, r+n, 0); }
-    ll _queryTree(int l, int r, ll t) {
-        ll idx = (l&1 ? l : r), cnt = 0;
-        if((l==r) || (l&1) || !(r&1)) {
-            while(idx > 1) {
-                idx >>= 1;
-                cnt += lazy[idx];
-            }
-        }
-        if(l == r) return _value(l, cnt) + tree[l] + lupd[l] + t;
-        if(l & 1) return _queryTree(l+1, r, t + _value(l, cnt) + tree[l] + lupd[l]);
-        if(!(r & 1)) return _queryTree(l, r-1, t + _value(r, cnt) + tree[r] + lupd[r]);
-        return _queryTree(l>>1, r>>1, t);
-    }
+    ll _climbLazy(int idx, ll cnt = 0) { for(idx>>=1; idx; idx>>=1) cnt += lazy[idx]; return cnt; }
 };
