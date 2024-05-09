@@ -8,10 +8,10 @@
 
 struct segtree {
     int n;
-    vl tree, lazy;
+    vl tree, lazy, lupd;
     vector<pii> rng;
     segtree(int N) : n(N) {
-        tree = vl(n<<1), lazy = vl(n<<1);
+        tree = vl(n<<1), lazy = vl(n<<1), lupd = vl(n<<1);
         rng = vector<pii>(n<<1);
         rng[0] = _construct(1);
     }
@@ -27,27 +27,40 @@ struct segtree {
     }
     void incUpdate(int l, int r, ll val) { _incUpdate(l+n, r+n, val); }
     void _incUpdate(int l, int r, ll val) {
-        if(l == r) return void(lazy[l] += _value(l, val));
+        if(l == r) {
+            _updateLupd(l, _value(l, val));
+            return void(lazy[l] += val);
+        }
         if(l & 1) {
-            lazy[l] += _value(l, val);
+            lazy[l] += val;
+            _updateLupd(l, _value(l, val));
             return void(_incUpdate(l+1, r, val));
         }
         if(!(r & 1)) {
-            lazy[r] += _value(r, val);
+            lazy[r] += val;
+            _updateLupd(r, _value(r, val));
             return void(_incUpdate(l, r-1, val));
         }
         return _incUpdate(l>>1, r>>1, val);
     }
-    ll query(int l, int r) { return _queryLazy(l+n, r+n, 0) + _querySeg(l+n, r+n, 0); }
+    void _updateLupd(int idx, ll val) {
+        while(idx) {
+            lupd[idx] += val;
+            idx >>= 1;
+        }
+    }
+    ll query(int l, int r) {
+        return _queryLazy(l+n, r+n, 0) + _querySeg(l+n, r+n, 0) + _queryLupd(l+n, r+n, 0);
+    }
     ll _queryLazy(int l, int r, ll t) {
         ll idx = (l&1 ? l : r), cnt = 0;
         if((l==r) || (l&1) || !(r&1)) {
-            while(idx) {
-                cnt += lazy[idx];
+            while(idx > 1) {
                 idx >>= 1;
+                cnt += lazy[idx];
             }
         }
-        if(l == r) return lazy[l] + _value(l, cnt) + t;
+        if(l == r) return _value(l, cnt) + t;
         if(l & 1) return _queryLazy(l+1, r, t + _value(l, cnt));
         if(!(r & 1)) return _queryLazy(l, r-1, t + _value(r, cnt));
         return _queryLazy(l>>1, r>>1, t);
@@ -57,5 +70,15 @@ struct segtree {
         if(l & 1) return _querySeg(l+1, r, t + tree[l]);
         if(!(r & 1)) return _querySeg(l, r-1, t + tree[r]);
         return _querySeg(l>>1, r>>1, t);
+    }
+    ll _queryLupd(int l, int r, ll t) {
+        if(l == r) return lupd[l] + t;
+        if(l & 1) return _queryLupd(l+1, r, t + lupd[l]);
+        if(!(r & 1)) return _queryLupd(l, r-1, t + lupd[r]);
+        return _queryLupd(l>>1, r>>1, t);
+    }
+    void printtree() {
+        for(ll i : lazy) cout << i << " ";
+        cout << endl;
     }
 };
