@@ -37,13 +37,13 @@ struct segtree {
     T query(int l, int r) { return _queryTree(l+n, r+n); }
     T _queryTree(int l, int r, T t = def) {
         for(;l<r; l>>=1,r>>=1) {
-            if(l & 1) { t = mop({t, value(l, _climbLazy(l)), tree[l]}); l++; }
+            if(l & 1) { t = op(t, value(l, _climbLazy(l)), tree[l]); l++; }
             if(l == r) break;
-            if(!(r & 1)) { t = mop({t, value(r, _climbLazy(r)), tree[r]}); r--; }
+            if(!(r & 1)) { t = op(t, value(r, _climbLazy(r)), tree[r]); r--; }
         }
-        return mop({value(l, _climbLazy(l)), tree[l], t});
+        return op(value(l, _climbLazy(l)), tree[l], t);
     }
     T _climbLazy(int idx, T cnt = def) { for(idx>>=1; idx; idx>>=1) cnt = op(cnt, lazy[idx]); return cnt; }
     T op(T a, T b) { return a + b; }
-    T mop(vt v, T t = def) { for(T x : v) t = op(t, x); return t; }
+    T op(T a, T b, T c) { return op(a, op(b, c)); }
 };
