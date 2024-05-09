@@ -49,10 +49,8 @@ struct segtree {
             idx >>= 1;
         }
     }
-    ll query(int l, int r) {
-        return _queryLazy(l+n, r+n, 0) + _querySeg(l+n, r+n, 0) + _queryLupd(l+n, r+n, 0);
-    }
-    ll _queryLazy(int l, int r, ll t) {
+    ll query(int l, int r) { return _queryTree(l+n, r+n, 0); }
+    ll _queryTree(int l, int r, ll t) {
         ll idx = (l&1 ? l : r), cnt = 0;
         if((l==r) || (l&1) || !(r&1)) {
             while(idx > 1) {
@@ -60,25 +58,9 @@ struct segtree {
                 cnt += lazy[idx];
             }
         }
-        if(l == r) return _value(l, cnt) + t;
-        if(l & 1) return _queryLazy(l+1, r, t + _value(l, cnt));
-        if(!(r & 1)) return _queryLazy(l, r-1, t + _value(r, cnt));
-        return _queryLazy(l>>1, r>>1, t);
-    }
-    ll _querySeg(int l, int r, ll t) {
-        if(l == r) return tree[l] + t;
-        if(l & 1) return _querySeg(l+1, r, t + tree[l]);
-        if(!(r & 1)) return _querySeg(l, r-1, t + tree[r]);
-        return _querySeg(l>>1, r>>1, t);
-    }
-    ll _queryLupd(int l, int r, ll t) {
-        if(l == r) return lupd[l] + t;
-        if(l & 1) return _queryLupd(l+1, r, t + lupd[l]);
-        if(!(r & 1)) return _queryLupd(l, r-1, t + lupd[r]);
-        return _queryLupd(l>>1, r>>1, t);
-    }
-    void printtree() {
-        for(ll i : lazy) cout << i << " ";
-        cout << endl;
+        if(l == r) return _value(l, cnt) + tree[l] + lupd[l] + t;
+        if(l & 1) return _queryTree(l+1, r, t + _value(l, cnt) + tree[l] + lupd[l]);
+        if(!(r & 1)) return _queryTree(l, r-1, t + _value(r, cnt) + tree[r] + lupd[r]);
+        return _queryTree(l>>1, r>>1, t);
     }
 };
