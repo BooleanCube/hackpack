@@ -13,7 +13,7 @@ struct segtree {
     vt tree, lazy;
     vector<pii> rng;
     segtree(int N) : n(N) {
-        tree = vt(n<<1), lazy = vt(n<<1), rng = vector<pii>(n<<1);
+        tree = vt(n<<1, (T)def), lazy = vt(n<<1, (T)def), rng = vector<pii>(n<<1);
         rng[0] = _construct(1);
     }
     pii _construct(int idx) {
