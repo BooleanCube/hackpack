@@ -7,12 +7,9 @@
  */
 
 #include <bits/extc++.h>
-
-using namespace std;
 using namespace __gnu_pbds;
 
 struct multiost {
-    typedef pair<int, unsigned> pii; // pair.first holds the value of the element
     typedef tree<
         pii,
         null_type,
