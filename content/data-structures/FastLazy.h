@@ -18,8 +18,7 @@ struct segtree {
     }
     pii _construct(int idx) {
         if(idx >= n) return rng[idx] = {idx-n, idx-n};
-        pii lh = _construct(idx << 1), rh = _construct((idx << 1)+1);
-        return rng[idx] = {lh.f, rh.s};
+        return rng[idx] = {_construct(idx << 1).f, _construct((idx << 1)+1).s};
     }
     T value(int idx, T val) { return val * (rng[idx].s - rng[idx].f + 1); }
     void update(int l, int r, T val) { _incUpdate(l+n, r+n, val); }
