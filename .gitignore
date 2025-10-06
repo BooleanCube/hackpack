@@ -32,5 +32,4 @@
 *.app
 
 .venv
-media/
 __pycache__/
