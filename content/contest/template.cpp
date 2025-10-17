@@ -11,7 +11,7 @@ using vi = vector<int>;
 using vl = vector<ll>;
 #define f first
 #define s second
-#define sp <<" "<<
+#define spc <<" "<<
 #define endl "\n" // remove when debugging
 
 int main() {
